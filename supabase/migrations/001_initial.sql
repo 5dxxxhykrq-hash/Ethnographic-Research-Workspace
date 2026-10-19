@@ -109,7 +109,8 @@ grant update(gdpr_completed_at) on public.memberships to authenticated;
 grant insert on public.workspace_records,public.personal_notes to authenticated;
 grant update(title,data) on public.workspace_records to authenticated;
 grant delete on public.workspace_records,public.personal_notes to authenticated;
-grant update(content,updated_at) on public.personal_notes to authenticated;
+-- PostgREST upsert updates all supplied conflict-key columns; RLS still restricts each row to its author.
+grant update(workspace_id,user_id,section,content,updated_at) on public.personal_notes to authenticated;
 grant select on public.audit_events to authenticated;
 
 create or replace function public.create_workspace(workspace_name text, course text default 'ANTH0130', display_name text default 'Researcher')
