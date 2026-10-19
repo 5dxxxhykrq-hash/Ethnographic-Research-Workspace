@@ -53,7 +53,7 @@ test('an observation session records roles and updates actual coverage',async({p
  await page.getByRole('button',{name:/Fieldwork/}).click();
  await page.getByRole('button',{name:'New session'}).click();
  await page.getByLabel('Session title').fill('Research observation test');
- await page.getByLabel('Method').selectOption('Observation');
+ await page.getByLabel('Method',{exact:true}).selectOption('Observation');
  await page.getByLabel('Planned / actual session minutes').fill('120');
  await page.getByLabel('Status').selectOption('Completed');
  await page.getByLabel('Member A').check();
