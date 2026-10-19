@@ -35,3 +35,32 @@ test('individual reflection notes persist in the local demo',async({page})=>{
  await page.getByRole('button',{name:/My Reflection/}).click();
  await expect(page.getByLabel('My personal observations, difficulties, methodological learning and references')).toHaveValue(content);
 });
+
+test('a team task can be assigned and retained after reload',async({page})=>{
+ await page.goto('/');
+ await page.getByRole('button',{name:/Team & Tasks/}).click();
+ await page.getByRole('button',{name:'New task'}).click();
+ await page.getByLabel('Task title').fill('Check Birkbeck access policies');
+ await page.getByLabel('Lead').selectOption('member-b');
+ await page.getByRole('button',{name:'Create task'}).click();
+ await expect(page.getByText('Check Birkbeck access policies')).toBeVisible();
+ await page.reload();
+ await expect(page.getByText('Check Birkbeck access policies')).toBeVisible();
+});
+
+test('an observation session records roles and updates actual coverage',async({page})=>{
+ await page.goto('/');
+ await page.getByRole('button',{name:/Fieldwork/}).click();
+ await page.getByRole('button',{name:'New session'}).click();
+ await page.getByLabel('Session title').fill('Research observation test');
+ await page.getByLabel('Method').selectOption('Observation');
+ await page.getByLabel('Planned / actual session minutes').fill('120');
+ await page.getByLabel('Status').selectOption('Completed');
+ await page.getByLabel('Member A').check();
+ await page.getByLabel(/I checked all applicable consent/).check();
+ await page.getByRole('button',{name:'Save session'}).click();
+ await expect(page.getByText('Research observation test')).toBeVisible();
+ await expect(page.getByText('2.0 h').first()).toBeVisible();
+ await page.reload();
+ await expect(page.getByText('Research observation test')).toBeVisible();
+});
