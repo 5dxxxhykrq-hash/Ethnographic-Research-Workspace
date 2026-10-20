@@ -1,8 +1,8 @@
-# Fieldwork OS — encrypted weekly database backup
+# Fieldwork OS — encrypted daily database backup
 
 This is a **staged setup**, not a backup that is already running. The GitHub repository is **PUBLIC**. NEVER commit `.sql`, `.backup`, database URLs, private encryption keys, member exports, or student reflections to this repository.
 
-The workflow `.github/workflows/encrypted-backup.yml` is scheduled for **Sundays 03:17 UTC** and can also run manually. It uses the Supabase-supported CLI logical-dump recipe (roles, schema, data) and encrypts the archive with **age** *before* uploading the encrypted `.age` file as a GitHub Actions artifact. GitHub retains each artifact for **30 days**. Anyone with read access to this public repository may download the **encrypted** artifact. Protect the offline age private key carefully.
+The workflow `.github/workflows/encrypted-backup.yml` is scheduled for **daily 03:17 UTC** and can also run manually. It uses the Supabase-supported CLI logical-dump recipe (roles, schema, data) and encrypts the archive with **age** *before* uploading the encrypted `.age` file as a GitHub Actions artifact. GitHub retains each artifact for **30 days**. Anyone with read access to this public repository may download the **encrypted** artifact. Protect the offline age private key carefully.
 
 **Scope limitation:** The Supabase CLI excludes managed schemas such as `auth` and `storage` by default. This backup preserves your Fieldwork OS application tables in `public` (including memberships, shared records, and private notes), but **is NOT a full restoration of Supabase Auth users, OAuth configuration, or Storage file objects**. For a complete disaster-recovery solution, plan identity recovery and Storage backups separately. Do not claim a complete recovery until a restoration has succeeded on an isolated project.
 
@@ -19,7 +19,7 @@ The workflow `.github/workflows/encrypted-backup.yml` is scheduled for **Sundays
    - **Secrets → New repository secret:** `SUPABASE_BACKUP_DB_URL` = your complete Session pooler database connection string (with DB password).
    - **Variables → New repository variable:** `BACKUP_AGE_RECIPIENT` = the *public* `age1...` recipient generated in step 2.
 5. Only when both are configured and data handling is approved, merge the backup PR to `main`. GitHub schedules run from `main`; PR tests do not perform live backups.
-6. Repository → Actions → **Encrypted weekly Fieldwork OS database backup** → **Run workflow**. Confirm success and that the only upload is `fieldwork-os-sql.tar.gz.age`. Do not upload plaintext files anywhere.
+6. Repository → Actions → **Encrypted daily Fieldwork OS database backup** → **Run workflow**. Confirm success and that the only upload is `fieldwork-os-sql.tar.gz.age`. Do not upload plaintext files anywhere.
 7. Download the encrypted artifact and store another copy in a UCL-approved private location. The GitHub artifact expires after 30 days; this is **not** indefinite retention or independent long-term storage.
 8. Restore a copy into an **isolated test Supabase project**, not the production database, and verify sample task/member/note data. Only then call this backup recoverable.
 
