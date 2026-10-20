@@ -49,8 +49,44 @@ function AuthGate(){
   <div className="auth-foot"><LockKeyhole size={14}/> Passwordless sign-in · Private reflection journals</div>
  </div></main>
 }
-function ProjectGate(){const {createWorkspace,joinWorkspace}=useWorkspace();const [name,setName]=useState('');const [code,setCode]=useState(new URLSearchParams(location.search).get('invite')||'');const {run,busy}=useAction();return <main className="auth-page"><div className="auth-card"><div className="brandmark"><Layers3/></div><h1>Start your research workspace</h1><p>Create a new project or join one using an invitation code. Course requirements are loaded automatically for ANTH0130.</p><form onSubmit={e=>{e.preventDefault();run(()=>createWorkspace(name))}}><Field label="New project name" placeholder="e.g. Bloomsbury Knowledge Access" value={name} onChange={setName} required/><button className="btn primary full" disabled={busy}>Create workspace <ArrowRight size={16}/></button></form><div className="auth-divider">or join an existing project</div><form onSubmit={e=>{e.preventDefault();run(()=>joinWorkspace(code))}}><Field label="Invitation code" value={code} onChange={setCode} placeholder="Paste your invitation code"/><button className="btn secondary full" disabled={!code.trim()||busy}>Join project</button></form></div></main>}
-export default function App(){const ctx=useWorkspace();const {user,loading,workspace,workspaces,cloud,role,error,clearError,setWorkspace,logout}=ctx;const [page,setPage]=useState(location.hash.replace('#/','')||(new URLSearchParams(location.search).has('invite')?'settings':'overview'));const [mobile,setMobile]=useState(false);const [switcher,setSwitcher]=useState(false);const [createOpen,setCreateOpen]=useState(false);const [newName,setNewName]=useState('');const {run,busy}=useAction();useEffect(()=>{const change=()=>setPage(location.hash.replace('#/','')||'overview');window.addEventListener('hashchange',change);return()=>window.removeEventListener('hashchange',change)},[]);const navigate=(id:string)=>{location.hash='/'+id;setPage(id);setMobile(false)};
+function ProjectGate(){
+ const {createWorkspace,joinWorkspace}=useWorkspace();
+ const invitedCode=new URLSearchParams(window.location.search).get('invite')||'';
+ const [name,setName]=useState('');
+ const [code,setCode]=useState(invitedCode);
+ const [showCreate,setShowCreate]=useState(false);
+ const {run,busy}=useAction();
+ return <main className="auth-page"><div className="auth-card workspace-entry-card">
+  <div className="brandmark"><Layers3/></div>
+  <div className="eyebrow">FIELDWORK OS · FIRST STEPS</div>
+  <h1>Welcome to your research workspace</h1>
+  <p>Already part of a research group? Join its existing workspace to share the same project, tasks and research records.</p>
+  <section className="workspace-entry-join" aria-labelledby="join-existing-title">
+   <div className="workspace-entry-label"><Users size={17}/> FOR GROUP MEMBERS</div>
+   <h2 id="join-existing-title">Join an existing workspace</h2>
+   <p>Ask your project owner for an invitation code. <strong>You do not need to create a new project.</strong></p>
+   <form onSubmit={e=>{e.preventDefault();run(()=>joinWorkspace(code.trim()))}}>
+    <Field label="Invitation code" placeholder="Paste your invitation code here" value={code} onChange={setCode} required/>
+    <button type="submit" className="btn primary full" disabled={!code.trim()||busy}>
+     Join workspace <ArrowRight size={16}/>
+    </button>
+   </form>
+   {invitedCode&&<div className="success-box" role="status">Invitation code detected from your link. Select Join workspace to accept it.</div>}
+  </section>
+  <section className="workspace-entry-create" aria-label="Start a new research group">
+   <button type="button" className="workspace-entry-create-toggle" aria-controls="workspace-create-form" aria-expanded={showCreate} onClick={()=>setShowCreate(v=>!v)}>
+    <span><strong>Start a new research group</strong><small>Only if you are setting up a separate project.</small></span>
+    <ChevronDown size={19} className={showCreate?'expanded':''}/>
+   </button>
+   {showCreate&&<form id="workspace-create-form" onSubmit={e=>{e.preventDefault();run(()=>createWorkspace(name))}}>
+    <Field label="New project name" placeholder="e.g. Bloomsbury Knowledge Access" value={name} onChange={setName} required/>
+    <button type="submit" className="btn secondary full" disabled={!name.trim()||busy}>Create a new workspace <ArrowRight size={16}/></button>
+   </form>}
+  </section>
+  <div className="auth-foot"><LockKeyhole size={14}/> Group records are shared · My Reflection stays private</div>
+ </div></main>
+}
+export default function App(){const ctx=useWorkspace();const {user,loading,workspace,workspaces,cloud,role,error,clearError,setWorkspace,logout}=ctx;const [page,setPage]=useState(location.hash.replace('#/','')||(new URLSearchParams(location.search).has('invite')?'settings':'overview'));const [mobile,setMobile]=useState(false);const [switcher,setSwitcher]=useState(false);const [createOpen,setCreateOpen]=useState(false);const [newName,setNewName]=useState('');const invitedCode=new URLSearchParams(window.location.search).get('invite')||'';const [joinOpen,setJoinOpen]=useState(Boolean(invitedCode));const [joinCode,setJoinCode]=useState(invitedCode);const {run,busy}=useAction();useEffect(()=>{const change=()=>setPage(location.hash.replace('#/','')||'overview');window.addEventListener('hashchange',change);return()=>window.removeEventListener('hashchange',change)},[]);const navigate=(id:string)=>{location.hash='/'+id;setPage(id);setMobile(false)};
  if(loading)return <div className="loading-screen"><Layers3 size={30}/> Loading your workspace…</div>;
  if(!user)return <AuthGate/>;
  if(!workspace)return <ProjectGate/>;
@@ -59,7 +95,7 @@ export default function App(){const ctx=useWorkspace();const {user,loading,works
  return <div className="app-shell">
   <aside className={'sidebar '+(mobile?'open':'')}>
    <div className="sidebar-brand"><div className="brandmark small"><Layers3 size={19}/></div><div><strong>Fieldwork OS</strong><span>RESEARCH WORKSPACE</span></div><button className="mobile-close icon-btn" onClick={()=>setMobile(false)}><X size={19}/></button></div>
-   <div className="project-switch"><button onClick={()=>setSwitcher(!switcher)} className="project-btn"><div className="project-avatar">{workspace.name.slice(0,1).toUpperCase()}</div><div><strong>{workspace.name}</strong><span>{workspace.course_code} · 2026–27</span></div><ChevronDown size={15}/></button>{switcher&&<div className="switch-menu">{workspaces.map(w=><button key={w.id} onClick={()=>{setWorkspace(w.id);setSwitcher(false)}}>{w.name}</button>)}<button onClick={()=>{setCreateOpen(true);setSwitcher(false)}}>+ New project</button></div>}</div>
+   <div className="project-switch"><button onClick={()=>setSwitcher(!switcher)} className="project-btn"><div className="project-avatar">{workspace.name.slice(0,1).toUpperCase()}</div><div><strong>{workspace.name}</strong><span>{workspace.course_code} · 2026–27</span></div><ChevronDown size={15}/></button>{switcher&&<div className="switch-menu">{workspaces.map(w=><button key={w.id} onClick={()=>{setWorkspace(w.id);setSwitcher(false)}}>{w.name}</button>)}<button onClick={()=>{setJoinCode('');setJoinOpen(true);setSwitcher(false)}}>+ Join existing workspace</button><button onClick={()=>{setCreateOpen(true);setSwitcher(false)}}>+ New project</button></div>}</div>
    <div className="sidebar-section">WORKSPACE</div><nav className="nav-list" aria-label="Main navigation">{nav.slice(0,8).map(n=><button key={n.id} onClick={()=>navigate(n.id)} className={'nav-item '+(page===n.id?'active':'')}><n.Icon size={18} strokeWidth={1.8}/><span>{n.label}</span>{n.id==='weekly'&&<span className="nav-mini">W{CURRENT_WEEK()}</span>}</button>)}</nav>
    <div className="sidebar-spacer"/><div className="sidebar-section">PREFERENCES</div><button onClick={()=>navigate('settings')} className={'nav-item '+(page==='settings'?'active':'')}><Settings size={18}/><span>Settings & members</span></button>
    <div className="sidebar-bottom"><div className="user-avatar">{user.name.slice(0,1).toUpperCase()}</div><div><strong>{user.name}</strong><span>{role||'Researcher'} {cloud?'':'· Demo'}</span></div>{cloud&&<button className="icon-btn" title="Sign out" onClick={logout}><LogOut size={17}/></button>}</div>
@@ -68,6 +104,7 @@ export default function App(){const ctx=useWorkspace();const {user,loading,works
   {!cloud&&<div className="demo-banner"><AlertCircle size={16}/><span><strong>Local demo mode.</strong> Changes are stored in this browser only. Connect Supabase for real team accounts and shared data.</span></div>}
   {error&&<div className="error-banner"><AlertCircle size={16}/><span>{error}</span><button onClick={clearError} className="icon-btn"><X size={16}/></button></div>}
   <main className="content">{render()}</main></div>
+  {joinOpen&&<Modal title="Join an existing workspace" onClose={()=>{setJoinOpen(false);setJoinCode('')}}><p className="text-muted">Enter the invitation code supplied by your group owner. Joining shares the group's records without creating a separate project. Your personal reflections remain private.</p><form onSubmit={e=>{e.preventDefault();run(()=>ctx.joinWorkspace(joinCode.trim()),()=>{setJoinOpen(false);setJoinCode('');const q=new URLSearchParams(window.location.search);q.delete('invite');window.history.replaceState(null,'',window.location.pathname+(q.toString()?'?'+q.toString():'')+window.location.hash);navigate('overview')})}}><Field label="Invitation code" value={joinCode} onChange={setJoinCode} placeholder="Paste the code from your teammate" required/><div className="modal-actions"><button type="button" className="btn secondary" onClick={()=>{setJoinOpen(false);setJoinCode('')}}>Cancel</button><button className="btn primary" disabled={!joinCode.trim()||busy}>Join workspace <ArrowRight size={16}/></button></div></form></Modal>}
   {createOpen&&<Modal title="Create project" onClose={()=>setCreateOpen(false)}><form onSubmit={e=>{e.preventDefault();run(()=>ctx.createWorkspace(newName),()=>{setCreateOpen(false);setNewName('');navigate('overview')})}}><Field label="Project name" value={newName} onChange={setNewName} required/><div className="modal-actions"><button type="button" className="btn secondary" onClick={()=>setCreateOpen(false)}>Cancel</button><button className="btn primary" disabled={busy}>Create</button></div></form></Modal>}
  </div>
 }

@@ -20,3 +20,26 @@
 .session-recovery{margin-top:18px;padding-top:15px;border-top:1px solid var(--line)}
 .session-recovery p{font-size:12px;line-height:1.5;color:var(--muted);margin-bottom:9px}
 .auth-card .otp-error{margin-bottom:14px;padding:12px 13px;border-radius:8px;background:#fff1ef;color:#a84747;border:1px solid #f0d5d0;font-size:12px;line-height:1.6;overflow-wrap:anywhere}
+
+
+/* First login: join the existing study group before offering new project creation. */
+.workspace-entry-card{max-width:550px}
+.workspace-entry-card .brandmark{margin-bottom:18px}
+.workspace-entry-card h1{font-size:clamp(24px,3.4vw,30px)}
+.workspace-entry-join{padding:20px;border:1px solid #cfe2d9;border-radius:13px;background:linear-gradient(135deg,#f4faf6 0%,#fff 94%);margin-top:18px}
+.workspace-entry-label{display:flex;align-items:center;gap:8px;font-size:10px;font-weight:800;letter-spacing:.11em;color:#3d7865;margin-bottom:11px}
+.workspace-entry-join h2{font-size:19px;margin-bottom:7px;color:#25374b}
+.workspace-entry-join p{font-size:12px;line-height:1.65;margin-bottom:14px;color:#71818b}
+.workspace-entry-join p strong{color:#3b705f}
+.workspace-entry-join form{margin-top:0}
+.workspace-entry-join .success-box{margin-top:12px}
+.workspace-entry-create{margin-top:19px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.workspace-entry-create-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;text-align:left;gap:16px;border:0;padding:15px 17px;background:#fff;color:var(--ink)}
+.workspace-entry-create-toggle:hover{background:#f8faf9}
+.workspace-entry-create-toggle strong,.workspace-entry-create-toggle small{display:block}
+.workspace-entry-create-toggle strong{font-size:13px;font-weight:700}
+.workspace-entry-create-toggle small{color:#93a0a8;font-size:11px;margin-top:4px}
+.workspace-entry-create-toggle svg{color:#82949a;transition:transform .2s;flex-shrink:0}
+.workspace-entry-create-toggle svg.expanded{transform:rotate(180deg)}
+.workspace-entry-create form{margin:0;padding:0 17px 18px;background:#fff}
+@media(max-width:520px){.workspace-entry-card{padding:26px 19px}.workspace-entry-join{padding:16px}.workspace-entry-card h1{font-size:24px}}
