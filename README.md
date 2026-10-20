@@ -4,7 +4,7 @@
 
 ## Current scope
 
-- Passwordless email login (Supabase Auth), project invitations and per-project roles (owner/admin/member/viewer).
+- Six-digit email OTP login (Supabase Auth; in-browser verification), project invitations and per-project roles (owner/admin/member/viewer).
 - Responsive dashboard and official 2026 Term 1 milestones, Week 1–10.
 - Assignable kanban tasks with deadlines, evidence references and status changes.
 - Research Question Studio with **immutable version history**, access/site tracking, method plans and decision log.
@@ -29,7 +29,7 @@ Visit http://localhost:5173. Without environment variables, the app displays a *
 
 1. Create a **Supabase project**.
 2. In Supabase SQL Editor, run `supabase/migrations/001_initial.sql`.
-3. Configure **Authentication > URL Configuration** (site URL and allowed redirect URL for localhost and your deployed app). Enable email OTP / magic-link sign-in.
+3. Configure **Authentication → Emails / Email Templates**: replace the contents of **both Confirm sign up and Magic link / OTP** with the six-digit template using `{{ .Token }}` as described in [Email OTP setup](docs/email-otp-setup.md). Preserve existing Site URL / Redirect URLs under URL Configuration.
 4. Copy `.env.example` to `.env.local` and set:
    - `VITE_SUPABASE_URL`
    - `VITE_SUPABASE_ANON_KEY` (public anon/publishable key; **never** a service-role key)
@@ -37,7 +37,7 @@ Visit http://localhost:5173. Without environment variables, the app displays a *
 6. For production, configure those **same public** environment variables on your hosting provider. Deploy via Vercel, Netlify or a compatible static host. Configure fallback routing as appropriate.
 7. Verify with two distinct accounts that they can share a project but cannot view each other's private reflection content.
 
-**Note:** Supabase credentials, authentication settings and production hosting are not provisioned by the code repository. A successful build is not an already deployed app.
+**Important:** Do not merge the new six-digit-code frontend until the two Supabase email templates have been changed and saved. The built-in Supabase SMTP service is development-only and allows about two emails per hour for preauthorized addresses. For team use configure custom SMTP. See [the step-by-step activation guide](docs/email-otp-setup.md).\n\n**Note:** Supabase credentials, authentication settings and production hosting are not provisioned by the code repository. A successful build is not an already deployed app.
 
 ## Privacy and ethics
 

@@ -15,3 +15,16 @@
 @media(max-width:1030px){.sidebar{width:215px}.content{padding:28px 24px 65px}.topbar{padding:0 24px}.two-col.uneven{grid-template-columns:1fr}.stat-grid{grid-template-columns:repeat(2,1fr)}.portfolio-layout{grid-template-columns:175px minmax(0,1fr)}.rubric-points{grid-template-columns:1fr}.portfolio-side{grid-template-columns:1fr 1fr}}
 @media(max-width:760px){.sidebar{position:fixed;top:0;left:0;transform:translateX(-101%);width:265px;box-shadow:0 0 30px #2231;transition:transform .2s}.sidebar.open{transform:translateX(0)}.mobile-shade{display:block;position:fixed;inset:0;background:#0005;z-index:25}.mobile-menu,.mobile-close{display:grid}.mobile-close{margin-left:auto}.topbar{height:58px;padding:0 18px}.topbar-week{display:none}.content{padding:21px 15px 55px}.page-title{align-items:flex-start;flex-direction:column}.page-title h1{font-size:27px}.two-col,.two-col.uneven{grid-template-columns:1fr}.timeline-layout,.portfolio-layout{grid-template-columns:1fr}.weeks-menu{display:flex;overflow-x:auto;padding-bottom:6px;gap:6px}.week-link{flex-shrink:0;padding:9px 11px}.portfolio-nav{position:static;display:flex;overflow-x:auto;gap:6px}.portfolio-nav button{min-width:158px}.portfolio-side{grid-column:auto;grid-template-columns:1fr}.stat-grid,.stat-grid.three{grid-template-columns:repeat(2,minmax(0,1fr))}.panel{padding:17px}.modal-backdrop{padding:8px}.modal-body{padding:18px}.form-grid{grid-template-columns:1fr}.week-actions{flex-wrap:wrap}.role-row label{min-width:100px}.role-row select{min-width:100px}.session-icon{width:34px;height:34px}.breadcrumbs{font-size:11px}.demo-banner,.error-banner{padding:10px 15px}.topbar .topbar-right{gap:7px}}
 @media(max-width:450px){.stat-grid,.stat-grid.three{grid-template-columns:1fr 1fr;gap:9px}.stat-card{padding:14px}.stat-value{font-size:24px}.stat-card>span{font-size:10px}.participation-grid,.coverage-grid{grid-template-columns:1fr}.panel-header,.section-heading{flex-wrap:wrap}.auth-card{padding:25px}.auth-card h1{font-size:24px}.button-row{width:100%}}
+
+/* Accessible, same-browser six-digit email OTP */
+.otp-step{border-top:1px solid var(--line);margin-top:19px;padding-top:17px}
+.otp-heading{display:flex;gap:9px;align-items:center;color:#365d53;font-size:14px;margin-bottom:8px}
+.otp-description{color:#768490;font-size:12px;overflow-wrap:anywhere;margin-bottom:18px}
+.otp-description strong{color:#3e5a64}
+.otp-input{display:block;width:100%;font-size:27px;font-family:Manrope,system-ui,sans-serif;font-weight:750;letter-spacing:.28em;text-align:center;padding:13px;border:1px solid #dfe7e8;border-radius:8px;background:white;color:#243348;margin-bottom:5px;font-variant-numeric:tabular-nums;outline:none}
+.otp-input:focus{border-color:#65a58a;box-shadow:0 0 0 3px #d9ede4}
+.otp-input::placeholder{color:#c4d0d0}
+.otp-hint{font-size:10px;line-height:1.6;color:#98a4ad;display:block;margin-bottom:15px}
+.otp-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:18px;flex-wrap:wrap}
+.otp-error{margin-top:15px;background:#fff0ef;color:#a34e4d;border:1px solid #f3d4d2;border-radius:8px;padding:11px 13px;font-size:12px;line-height:1.6;overflow-wrap:anywhere}
+.otp-error span{display:block;margin-top:5px}
