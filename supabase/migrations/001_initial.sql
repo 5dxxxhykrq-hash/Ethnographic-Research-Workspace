@@ -125,7 +125,7 @@ begin
 end $$;
 
 create or replace function public.create_workspace_invite(target_workspace uuid)
-returns text language plpgsql security definer set search_path=public as $$
+returns text language plpgsql security definer set search_path=pg_catalog,extensions,public,pg_temp as $
 declare code text;
 begin
  if auth.uid() is null or not public.is_workspace_manager(target_workspace) then raise exception 'Manager access required'; end if;
@@ -136,7 +136,7 @@ begin
 end $$;
 
 create or replace function public.join_workspace_by_code(invite_code text,display_name text default 'Researcher')
-returns uuid language plpgsql security definer set search_path=public as $$
+returns uuid language plpgsql security definer set search_path=pg_catalog,extensions,public,pg_temp as $
 declare i public.workspace_invites%rowtype; u uuid:=auth.uid();
 begin
  if u is null then raise exception 'Authentication required'; end if;
