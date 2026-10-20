@@ -1,17 +1,17 @@
-name: Encrypted weekly Fieldwork OS database backup
+name: Encrypted daily Fieldwork OS database backup
 
 on:
   workflow_dispatch:
   schedule:
-    # Weekly on Sundays at 03:17 UTC, outside the busy top-of-hour window.
-    - cron: '17 3 * * 0'
+    # Daily at 03:17 UTC, outside the busy top-of-hour window.
+    - cron: '17 3 * * *'
 
 # Only read-only repository permissions are required.
 permissions:
   contents: read
 
 concurrency:
-  group: fieldwork-os-weekly-backup
+  group: fieldwork-os-daily-backup
   cancel-in-progress: false
 
 jobs:
