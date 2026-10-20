@@ -39,7 +39,7 @@ test('magic-link redirect with tokens restores the user and opens the workspace 
   exp:Math.floor(Date.now()/1000)+3600,iat:Math.floor(Date.now()/1000)
  }), 'placeholder-signature'].join('.');
  await page.goto('/#access_token='+encodeURIComponent(accessToken)+'&refresh_token=test-refresh-token&expires_in=3600&token_type=bearer&type=signup');
- await expect(page.getByRole('heading',{name:'Start your research workspace'})).toBeVisible({timeout:15000});
+ await expect(page.getByRole('heading',{name:'Welcome to your research workspace'})).toBeVisible({timeout:15000});
  await page.reload();
- await expect(page.getByRole('heading',{name:'Start your research workspace'})).toBeVisible({timeout:15000});
+ await expect(page.getByRole('heading',{name:'Welcome to your research workspace'})).toBeVisible({timeout:15000});
 });
