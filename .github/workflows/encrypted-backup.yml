@@ -1,0 +1,84 @@
+name: Encrypted daily Fieldwork OS database backup
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Daily at 03:17 UTC, outside the busy top-of-hour window.
+    - cron: '17 3 * * *'
+
+# Only read-only repository permissions are required.
+permissions:
+  contents: read
+
+concurrency:
+  group: fieldwork-os-daily-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    name: Encrypt application SQL and upload encrypted archive
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      # Add these via Settings > Secrets and variables > Actions.
+      BACKUP_DB_URL: ${{ secrets.SUPABASE_BACKUP_DB_URL }}
+      AGE_RECIPIENT: ${{ vars.BACKUP_AGE_RECIPIENT }}
+    steps:
+      - name: Require database connection secret and encryption recipient
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "${BACKUP_DB_URL}" || -z "${AGE_RECIPIENT}" ]]; then
+            echo "::error::Missing SUPABASE_BACKUP_DB_URL secret or BACKUP_AGE_RECIPIENT variable. Read docs/secure-backups.md before enabling."
+            exit 1
+          fi
+          if [[ ! "${AGE_RECIPIENT}" =~ ^age1[a-z0-9]{58}$ ]]; then
+            echo "::error::BACKUP_AGE_RECIPIENT must be an age public key, e.g. age1..., not a private key."
+            exit 1
+          fi
+
+      - name: Install Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Install age encryption utility
+        shell: bash
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq age
+
+      - name: Create SQL dumps and encrypt before uploading
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          private_dir="$(mktemp -d)"
+          trap 'rm -rf "$private_dir"' EXIT
+          mkdir -p "$RUNNER_TEMP/encrypted-backup"
+
+          # Follows Supabase's supported logical backup recipe, which excludes
+          # Supabase-managed schemas (including auth and storage) by default.
+          # Never place these unencrypted files inside the Git repository.
+          supabase db dump --db-url "$BACKUP_DB_URL" -f "$private_dir/roles.sql" --role-only
+          supabase db dump --db-url "$BACKUP_DB_URL" -f "$private_dir/schema.sql"
+          supabase db dump --db-url "$BACKUP_DB_URL" -f "$private_dir/data.sql" --use-copy --data-only
+
+          test -s "$private_dir/schema.sql"
+          test -s "$private_dir/data.sql"
+
+          tar -czf "$private_dir/fieldwork-os-sql.tar.gz" -C "$private_dir" roles.sql schema.sql data.sql
+          age --encrypt --recipient "$AGE_RECIPIENT" \
+            --output "$RUNNER_TEMP/encrypted-backup/fieldwork-os-sql.tar.gz.age" \
+            "$private_dir/fieldwork-os-sql.tar.gz"
+          test -s "$RUNNER_TEMP/encrypted-backup/fieldwork-os-sql.tar.gz.age"
+          echo "SQL dump encrypted. Unencrypted files exist only temporarily on this runner."
+
+      - name: Publish encrypted artifact only
+        uses: actions/upload-artifact@v4
+        with:
+          name: fieldwork-os-encrypted-sql-${{ github.run_id }}
+          path: ${{ runner.temp }}/encrypted-backup/*.age
+          retention-days: 30
+          if-no-files-found: error
+          compression-level: 0
