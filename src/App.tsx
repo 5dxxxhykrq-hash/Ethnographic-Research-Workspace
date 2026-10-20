@@ -15,7 +15,40 @@ const nav=[
  {id:'reflection',label:'My Reflection',hint:'个人私有反思',Icon:BookUser},
  {id:'settings',label:'Settings',hint:'成员与项目设置',Icon:Settings}
 ];
-function AuthGate(){const {login,cloud}=useWorkspace();const [email,setEmail]=useState('');const [sent,setSent]=useState(false);const {busy,run}=useAction();return <main className="auth-page"><div className="auth-card"><div className="brandmark"><Layers3 size={23}/></div><div className="eyebrow">ETHNOGRAPHIC RESEARCH WORKSPACE</div><h1>Research is better when the process is visible.</h1><p>Manage collaborative fieldwork, track weekly milestones and build a shared methods portfolio without losing individual reflections.</p>{cloud?<form onSubmit={e=>{e.preventDefault();run(async()=>{await login(email);setSent(true)})}}><Field label="University email" type="email" value={email} onChange={setEmail} placeholder="you@ucl.ac.uk" required/><button className="btn primary full" disabled={busy}>{sent?'Send another sign-in link':'Send secure sign-in link'} <ArrowRight size={16}/></button>{sent&&<div className="success-box">Check your inbox for a Supabase magic link. You can return to this tab after signing in.</div>}</form>:null}<div className="auth-foot"><LockKeyhole size={14}/> Passwordless sign-in · Private reflection journals</div></div></main>}
+function AuthGate(){
+ const {login,cloud,recoverSession}=useWorkspace();
+ const [email,setEmail]=useState('');
+ const [sent,setSent]=useState(false);
+ const [callbackError,setCallbackError]=useState('');
+ const {busy,run}=useAction();
+ useEffect(()=>{
+  // Supabase can redirect with an error fragment even after the email link was clicked.
+  // Surface just the error; do not read or print access/refresh tokens.
+  const hash=new URLSearchParams(window.location.hash.slice(1));
+  const query=new URLSearchParams(window.location.search);
+  const code=hash.get('error_code')||query.get('error_code')||hash.get('error')||query.get('error');
+  if(code){
+   const description=hash.get('error_description')||query.get('error_description')||'The email verification link was rejected.';
+   setCallbackError('Email verification did not complete ('+code+'): '+description);
+   for(const key of ['error','error_code','error_description'])query.delete(key);
+   window.history.replaceState(null,'',window.location.pathname+(query.toString()?'?'+query.toString():''));
+  }
+ },[]);
+ return <main className="auth-page"><div className="auth-card">
+  <div className="brandmark"><Layers3 size={23}/></div>
+  <div className="eyebrow">ETHNOGRAPHIC RESEARCH WORKSPACE</div>
+  <h1>Research is better when the process is visible.</h1>
+  <p>Manage collaborative fieldwork, track weekly milestones and build a shared methods portfolio without losing individual reflections.</p>
+  {callbackError&&<div className="otp-error" role="alert">{callbackError}</div>}
+  {cloud?<form onSubmit={e=>{e.preventDefault();run(async()=>{await login(email);setSent(true)})}}>
+   <Field label="University email" type="email" value={email} onChange={setEmail} placeholder="you@ucl.ac.uk" required/>
+   <button className="btn primary full" disabled={busy}>{sent?'Send another sign-in link':'Send secure sign-in link'} <ArrowRight size={16}/></button>
+   {sent&&<div className="success-box">Check your inbox for a Supabase magic link. You can return to this tab after signing in.</div>}
+  </form>:null}
+  {cloud&&<div className="session-recovery"><p>Already confirmed your email but still seeing this page?</p><button type="button" className="btn secondary full" disabled={busy} onClick={()=>run(recoverSession)}>Check saved sign-in session</button></div>}
+  <div className="auth-foot"><LockKeyhole size={14}/> Passwordless sign-in · Private reflection journals</div>
+ </div></main>
+}
 function ProjectGate(){const {createWorkspace,joinWorkspace}=useWorkspace();const [name,setName]=useState('');const [code,setCode]=useState(new URLSearchParams(location.search).get('invite')||'');const {run,busy}=useAction();return <main className="auth-page"><div className="auth-card"><div className="brandmark"><Layers3/></div><h1>Start your research workspace</h1><p>Create a new project or join one using an invitation code. Course requirements are loaded automatically for ANTH0130.</p><form onSubmit={e=>{e.preventDefault();run(()=>createWorkspace(name))}}><Field label="New project name" placeholder="e.g. Bloomsbury Knowledge Access" value={name} onChange={setName} required/><button className="btn primary full" disabled={busy}>Create workspace <ArrowRight size={16}/></button></form><div className="auth-divider">or join an existing project</div><form onSubmit={e=>{e.preventDefault();run(()=>joinWorkspace(code))}}><Field label="Invitation code" value={code} onChange={setCode} placeholder="Paste your invitation code"/><button className="btn secondary full" disabled={!code.trim()||busy}>Join project</button></form></div></main>}
 export default function App(){const ctx=useWorkspace();const {user,loading,workspace,workspaces,cloud,role,error,clearError,setWorkspace,logout}=ctx;const [page,setPage]=useState(location.hash.replace('#/','')||(new URLSearchParams(location.search).has('invite')?'settings':'overview'));const [mobile,setMobile]=useState(false);const [switcher,setSwitcher]=useState(false);const [createOpen,setCreateOpen]=useState(false);const [newName,setNewName]=useState('');const {run,busy}=useAction();useEffect(()=>{const change=()=>setPage(location.hash.replace('#/','')||'overview');window.addEventListener('hashchange',change);return()=>window.removeEventListener('hashchange',change)},[]);const navigate=(id:string)=>{location.hash='/'+id;setPage(id);setMobile(false)};
  if(loading)return <div className="loading-screen"><Layers3 size={30}/> Loading your workspace…</div>;
