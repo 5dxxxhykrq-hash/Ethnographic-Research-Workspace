@@ -8,7 +8,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 0.0.0.0",
     "check": "tsc --noEmit",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:otp": "playwright test -c playwright.otp.config.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.48.1",
