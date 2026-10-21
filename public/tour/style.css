@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+/* Fully self-contained; no third-party font loading in the demo. */
 :root{color-scheme:dark;--bg:#102630;--mint:#84c3ae;--line:#2b414a;--text:#ecf7f5;--muted:#a1b8b8;--panel:#f7f9f9;--dark:#26364a;--green:#397665}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);font-family:'DM Sans',system-ui,sans-serif;color:var(--text)}button,input{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}button:focus-visible,a:focus-visible{outline:3px solid #a1e8d1;outline-offset:3px}
 .ambient{position:fixed;border-radius:100%;filter:blur(85px);opacity:.2;pointer-events:none}.ambient-one{width:650px;height:650px;left:-300px;top:130px;background:#487a75}.ambient-two{width:450px;height:450px;right:-200px;bottom:-200px;background:#477e8f}
