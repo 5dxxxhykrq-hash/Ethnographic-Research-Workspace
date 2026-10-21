@@ -1,0 +1,33 @@
+name: OpenMontage male voiceover for Fieldwork OS
+on:
+  pull_request:
+    paths:
+      - 'public/tour/openmontage_narration.json'
+      - 'scripts/openmontage_narrate.py'
+      - '.github/workflows/openmontage-voice.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  speech:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install upstream OpenMontage speech adapter
+        run: |
+          git clone --depth 1 https://github.com/calesthio/OpenMontage.git /tmp/OpenMontage
+          python -m pip install --upgrade pip
+          python -m pip install 'piper-tts>=1.3.0'
+          mkdir -p voices
+          python -m piper.download_voices --data-dir voices en_GB-alan-medium
+      - name: Render 21 English male narration tracks
+        run: python scripts/openmontage_narrate.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: openmontage-british-male-narration
+          path: tour-voice/*
+          retention-days: 14
