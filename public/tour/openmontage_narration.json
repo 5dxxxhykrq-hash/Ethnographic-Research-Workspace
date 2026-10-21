@@ -1,0 +1,132 @@
+{
+  "source": "OpenMontage screen-demo pipeline; voice provider OpenMontage piper_tts",
+  "voice_model": "en_GB-alan-medium",
+  "scenes": [
+    {
+      "id": "welcome",
+      "label": "Welcome to Fieldwork OS",
+      "base": 0,
+      "voice": "Welcome to Fieldwork O S: a research workspace built to support ethnographic group projects at U C L. This demonstration follows a study from its first question through collaborative fieldwork and individual reflection."
+    },
+    {
+      "id": "signin",
+      "label": "University sign-in",
+      "base": 1,
+      "voice": "Start by signing in with your university Microsoft account. Every student uses their own identity. This matters because group research is shared, but personal reflections and membership permissions remain associated with individual accounts."
+    },
+    {
+      "id": "join",
+      "label": "Join or create a workspace",
+      "base": 2,
+      "voice": "Already part of a research group? Select Join existing workspace and enter the invitation code from your project owner. Only choose New project when you want to start a completely separate research study."
+    },
+    {
+      "id": "overview",
+      "label": "Project overview",
+      "base": 3,
+      "voice": "The overview brings your research into one place. It shows the teaching week, completed tasks, team membership, research hours and the current research question, alongside the next activities that need attention."
+    },
+    {
+      "id": "weekly",
+      "label": "Weekly tracker",
+      "base": 4,
+      "voice": "Weekly Tracker separates formal course milestones from tasks your group creates. Move between teaching weeks to see what needs preparing, record responsibilities, and track progress towards the November fieldwork period."
+    },
+    {
+      "id": "design",
+      "label": "Research design",
+      "base": 5,
+      "voice": "In Research Design, your group develops an exploratory research question. Add research aims and the reason for each revision. Earlier versions remain available, so feedback, changing assumptions and methodological decisions are traceable."
+    },
+    {
+      "id": "tasks",
+      "label": "Team and tasks",
+      "base": 6,
+      "voice": "Team and Tasks is the shared task board. Assign a named team member, add a due week and move a task from To do to In progress, In review or Completed. Everyone can identify who is responsible."
+    },
+    {
+      "id": "sync",
+      "label": "Collaborating across accounts",
+      "base": 7,
+      "voice": "Each collaborator signs in separately but joins the same group workspace. Shared tasks and methodological records are intended to sync across devices. Test this with two accounts before relying on it for actual research."
+    },
+    {
+      "id": "fieldwork",
+      "label": "Fieldwork planning",
+      "base": 8,
+      "voice": "Fieldwork Planner organises interviews and participant observation. Schedule sessions, assign researcher roles and record hours. For A N T H zero one three zero, every student must engage in both methods, and interviews must not be audio recorded."
+    },
+    {
+      "id": "ethics",
+      "label": "Ethics and access",
+      "base": 9,
+      "voice": "Ethics and Access keeps informed consent, participant information sheets, site permission, positionality and data protection training visible. Do not enter participant names or identifying fieldnotes in the shared workspace. A checklist is not ethics approval."
+    },
+    {
+      "id": "portfolio",
+      "label": "Shared methods portfolio",
+      "base": 10,
+      "voice": "Methods Portfolio is a living group document. Its shared sections capture research decisions, challenges, feedback and what changed. It supports collaborative thinking rather than generating text for a student's assessed reflective essay."
+    },
+    {
+      "id": "portfolio-detail",
+      "label": "Seven portfolio sections",
+      "image": "IMG_9679.png",
+      "voice": "The seven sections cover research aims and questions; locations and access; participant criteria; participant observation; semi structured interviews; ethically engaged research; and analysis of ethnographic data. In each section, explain why choices were made."
+    },
+    {
+      "id": "reflection",
+      "label": "Private reflection journal",
+      "base": 11,
+      "voice": "My Reflection is separate from the shared group portfolio. It is designed as a private journal for the signed in user. Use it to document personal observations, unexpected difficulties and methodological learning."
+    },
+    {
+      "id": "reflection-structure",
+      "label": "Part A and Part B",
+      "image": "IMG_9681.png",
+      "voice": "For Part A, select exactly two topics: research aims and questions, research design, or evidence and analysis. Part B requires all three topics: methods and accessing material; ethically engaged research; and participating in my learning."
+    },
+    {
+      "id": "reflection-save",
+      "label": "Save personal notes",
+      "image": "IMG_9680.png",
+      "voice": "Choose a section from the dropdown, write your own notes in the editor and select Save private notes. The page also tracks the word count and deadline. Follow your module's assessment integrity rules."
+    },
+    {
+      "id": "projects",
+      "label": "Separate independent projects",
+      "base": 12,
+      "voice": "You can create another project without merging it with your current group. It has its own research question, members and shared records. A separate project is different from the private My Reflection journal."
+    },
+    {
+      "id": "members",
+      "label": "Members and invitation codes",
+      "base": 13,
+      "voice": "Settings and Members shows who belongs to the selected project and what their role is. Project owners can manage membership and generate time limited invitation codes. Share these only through trusted channels."
+    },
+    {
+      "id": "invitation-details",
+      "label": "Joining by invitation",
+      "image": "IMG_9677.png",
+      "voice": "An owner can generate an invitation code and copy the invitation link. Joining students use Join existing workspace and paste that code. Their accounts then appear in the member list. This example deliberately hides the real invitation code."
+    },
+    {
+      "id": "privacy-details",
+      "label": "Account protection",
+      "image": "IMG_9678.png",
+      "voice": "The Privacy and Account panel explains row level security and project roles. It also warns against uploading identifying fieldnotes. A project owner may control members, while read only roles should not edit shared material."
+    },
+    {
+      "id": "security",
+      "label": "Privacy is a testable requirement",
+      "base": 14,
+      "voice": "The intended security boundary is simple: group members can access authorised shared records, another group should not, and personal reflections should remain visible only to their author. These claims still require independent multi account tests."
+    },
+    {
+      "id": "closing",
+      "label": "Getting started safely",
+      "base": 15,
+      "voice": "Fieldwork O S brings together a shared research workspace, private reflection and separate independent projects. Before collecting real information, confirm team invitations, role restrictions and note isolation using fictional test records. Then follow approved university storage guidance."
+    }
+  ]
+}
