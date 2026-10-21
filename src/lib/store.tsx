@@ -6,7 +6,7 @@ import {DEMO_WORKSPACE,DEMO_MEMBERS,DEMO_RECORDS} from './course';
 const KEY='fieldwork-os-demo-v1';
 const fresh=()=>({workspaces:[DEMO_WORKSPACE],members:DEMO_MEMBERS,records:DEMO_RECORDS,notes:[] as PersonalNote[]});
 function readDemo(){try{const v=localStorage.getItem(KEY);return v?JSON.parse(v):fresh()}catch{return fresh()}}
-type ContextShape={cloud:boolean;user:CurrentUser|null;loading:boolean;workspaces:Workspace[];workspace:Workspace|null;members:Member[];records:WorkRecord[];notes:PersonalNote[];role:Role|null;canEdit:boolean;error:string;clearError:()=>void;setWorkspace:(id:string)=>void;login:(email:string)=>Promise<void>;recoverSession:()=>Promise<void>;logout:()=>Promise<void>;createWorkspace:(name:string)=>Promise<void>;joinWorkspace:(code:string)=>Promise<void>;createInvite:()=>Promise<string>;updateMemberRole:(userId:string,role:Role)=>Promise<void>;removeMember:(userId:string)=>Promise<void>;saveGdpr:(completed:boolean)=>Promise<void>;createRecord:(record:DraftRecord)=>Promise<void>;editRecord:(id:string,patch:Partial<WorkRecord>)=>Promise<void>;deleteRecord:(id:string)=>Promise<void>;saveNote:(section:string,content:string)=>Promise<void>;refresh:()=>Promise<void>};
+type ContextShape={cloud:boolean;user:CurrentUser|null;loading:boolean;workspaces:Workspace[];workspace:Workspace|null;members:Member[];records:WorkRecord[];notes:PersonalNote[];role:Role|null;canEdit:boolean;error:string;clearError:()=>void;setWorkspace:(id:string)=>void;login:(email:string)=>Promise<void>;loginWithMicrosoft:()=>Promise<void>;recoverSession:()=>Promise<void>;logout:()=>Promise<void>;createWorkspace:(name:string)=>Promise<void>;joinWorkspace:(code:string)=>Promise<void>;createInvite:()=>Promise<string>;updateMemberRole:(userId:string,role:Role)=>Promise<void>;removeMember:(userId:string)=>Promise<void>;saveGdpr:(completed:boolean)=>Promise<void>;createRecord:(record:DraftRecord)=>Promise<void>;editRecord:(id:string,patch:Partial<WorkRecord>)=>Promise<void>;deleteRecord:(id:string)=>Promise<void>;saveNote:(section:string,content:string)=>Promise<void>;refresh:()=>Promise<void>};
 const C=createContext<ContextShape|null>(null);
 export const useWorkspace=()=>{const x=useContext(C);if(!x)throw new Error('WorkspaceProvider missing');return x};
 export function WorkspaceProvider({children}:{children:React.ReactNode}){
@@ -37,6 +37,17 @@ export function WorkspaceProvider({children}:{children:React.ReactNode}){
  const setWorkspace=(id:string)=>{setActive(id);localStorage.setItem('fieldwork-active',id)};
  const refresh=async()=>{if(supabase&&user){await loadWorkspaces(user);if(current)await loadProject(current.id,user)}};
  const login=async(email:string)=>{if(!supabase)return;const {error:e}=await supabase.auth.signInWithOtp({email,options:{emailRedirectTo:window.location.origin+window.location.pathname+window.location.search}});if(e)fail(e)};
+ const loginWithMicrosoft=async()=>{
+  if(!supabase)throw Error('Supabase is not configured.');
+  // Preserve invitation codes when users authenticate before joining a workspace.
+  // The redirect URL must be allowlisted under Supabase Auth -> URL Configuration.
+  const redirectTo=window.location.origin+window.location.pathname+window.location.search;
+  const {error:e}=await supabase.auth.signInWithOAuth({
+   provider:'azure',
+   options:{scopes:'email',redirectTo}
+  });
+  if(e)fail(e);
+ };
  const recoverSession=async()=>{
   if(!supabase)throw Error('Supabase is not configured.');
   const {data:{session},error:sessionError}=await supabase.auth.getSession();
@@ -58,6 +69,6 @@ export function WorkspaceProvider({children}:{children:React.ReactNode}){
  const editRecord=async(id:string,patch:Partial<WorkRecord>)=>{if(!current||!user||!canEdit)throw Error('Editor access required');const safe:any={};if(patch.title!==undefined)safe.title=patch.title;if(patch.data!==undefined)safe.data=patch.data;if(supabase){const {error:e}=await supabase.from('workspace_records').update(safe).eq('id',id).eq('workspace_id',current.id);if(e)return fail(e);await loadProject(current.id,user)}else setDemo((d:any)=>({...d,records:d.records.map((r:WorkRecord)=>r.id===id?{...r,...safe,updated_at:new Date().toISOString()}:r)}))};
  const deleteRecord=async(id:string)=>{if(!current||!user||!canEdit)throw Error('Editor access required');if(supabase){const {error:e}=await supabase.from('workspace_records').delete().eq('id',id).eq('workspace_id',current.id);if(e)return fail(e);await loadProject(current.id,user)}else setDemo((d:any)=>({...d,records:d.records.filter((r:WorkRecord)=>r.id!==id)}))};
  const saveNote=async(section:string,content:string)=>{if(!current||!user)throw Error('Sign in first');if(supabase){const {error:e}=await supabase.from('personal_notes').upsert({workspace_id:current.id,user_id:user.id,section,content,updated_at:new Date().toISOString()},{onConflict:'workspace_id,user_id,section'});if(e)return fail(e);await loadProject(current.id,user)}else setDemo((d:any)=>({...d,notes:[...d.notes.filter((n:PersonalNote)=>!(n.workspace_id===current.id&&n.user_id===user.id&&n.section===section)),{id:uid(),workspace_id:current.id,user_id:user.id,section,content,updated_at:new Date().toISOString()}]}))};
- const value:ContextShape={cloud:cloudEnabled,user,loading,workspaces,workspace:current,members,records,notes,role,canEdit,error,clearError:()=>setError(''),setWorkspace,login,recoverSession,logout,createWorkspace,joinWorkspace,createInvite,updateMemberRole,removeMember,saveGdpr,createRecord,editRecord,deleteRecord,saveNote,refresh};
+ const value:ContextShape={cloud:cloudEnabled,user,loading,workspaces,workspace:current,members,records,notes,role,canEdit,error,clearError:()=>setError(''),setWorkspace,login,loginWithMicrosoft,recoverSession,logout,createWorkspace,joinWorkspace,createInvite,updateMemberRole,removeMember,saveGdpr,createRecord,editRecord,deleteRecord,saveNote,refresh};
  return <C.Provider value={value}>{children}</C.Provider>
 }
