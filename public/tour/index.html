@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="theme-color" content="#102630"/>
+<meta name="description" content="An interactive, synthetic-data walkthrough of Fieldwork OS for ethnographic research teams."/>
+<title>Fieldwork OS · Interactive Product Tour</title>
+<link rel="stylesheet" href="./style.css"/>
+<script src="./tour.js" defer></script>
+</head>
+<body>
+<div class="ambient ambient-one" aria-hidden="true"></div><div class="ambient ambient-two" aria-hidden="true"></div>
+<div class="tour-app">
+<header class="tour-topbar">
+ <a class="wordmark" href="../" aria-label="Fieldwork OS home"><span class="mark">▱<span>▱</span></span><span><strong>Fieldwork OS</strong><small>THE INTERACTIVE TOUR</small></span></a>
+ <div class="top-meta"><span class="meta-line">ANTH0130 · 2026–27</span><span class="meta-pill">SIMULATED DEMO · NO REAL DATA</span></div>
+ <div class="top-actions"><button id="lang" aria-label="Toggle Chinese and English captions">中文 / EN</button><button id="restart" aria-label="Restart tour">↺ <span class="hide-mobile">Restart</span></button></div>
+</header>
+<main class="tour-main">
+ <div class="stage-wrap">
+  <div class="stage-toolbar"><span class="stage-label"><span class="live-dot"></span> PRODUCT WALKTHROUGH</span><span class="stage-count" id="stageCount">01 / 16</span></div>
+  <div id="stage" class="stage" aria-live="off">
+   <div id="browser" class="browser-window">
+    <div class="browser-top"><div class="dots"><i></i><i></i><i></i></div><span class="url">ethnographic-research-workspace.vercel.app</span><span class="browser-indicator">● DEMO</span></div>
+    <div id="demoView" class="browser-content"></div>
+    <div class="guided-pointer" id="pointer" aria-hidden="true"><span></span></div>
+   </div>
+   <div class="stage-watermark">SIMULATED · NOT CONNECTED TO SUPABASE</div>
+  </div>
+ </div>
+ <aside class="story-panel" aria-live="polite">
+  <div class="story-kicker" id="kicker">01 / WELCOME</div>
+  <div class="story-bar"></div>
+  <h1 id="storyTitle">Research is better when the process is visible.</h1>
+  <p class="story-intro" id="storyCopy"></p>
+  <div class="story-note" id="storyNote"></div>
+  <div class="story-bottom"><span class="chapter-tag" id="chapterTag">INTRODUCTION</span><span class="duration" id="duration">00:00 / 02:08</span></div>
+ </aside>
+</main>
+<footer class="tour-bottom">
+ <div class="controls"><button id="prev" class="control-btn" title="Previous chapter" aria-label="Previous chapter">←</button><button id="play" class="play-btn" aria-label="Pause tour"><span id="playIcon">Ⅱ</span><span id="playLabel">Pause</span></button><button id="next" class="control-btn" title="Next chapter" aria-label="Next chapter">→</button></div>
+ <div class="timeline-wrap"><div class="timeline-head"><span id="timelineLabel">Welcome</span><span id="timeLeft">01 / 16</span></div><div class="timeline" id="timeline" role="group" aria-label="Tour chapters"></div><div class="timeline-hint">Tap a chapter to jump · Space to pause · ← → to navigate</div></div>
+ <button id="share" class="share-btn" title="Copy tour link">↗ <span class="hide-mobile">Share tour</span></button>
+</footer>
+<div class="notice">This tour uses fictitious examples. Security features are described as designed—not as independently audited. Never put real participant identities or interview transcripts into this demo.</div>
+</div>
+</body>
+</html>
