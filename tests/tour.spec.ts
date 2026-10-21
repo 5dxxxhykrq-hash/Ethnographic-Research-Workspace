@@ -2,7 +2,7 @@ import {test,expect} from '@playwright/test';
 
 test.describe('synthetic Fieldwork OS interactive tour',()=>{
  test('renders a 16-chapter tour with bilingual captions and playback controls',async({page})=>{
-  await page.goto('/tour/');
+  await page.goto('/tour/index.html');
   await expect(page).toHaveTitle(/Fieldwork OS · Interactive Product Tour/);
   await expect(page.getByRole('heading',{name:'An entire research workflow. One workspace.'})).toBeVisible();
   await expect(page.locator('#timeline button')).toHaveCount(16);
@@ -14,7 +14,7 @@ test.describe('synthetic Fieldwork OS interactive tour',()=>{
  test('covers Microsoft login, all 9 sections, team membership, independent projects and privacy',async({page})=>{
   const requests:string[]=[];
   page.on('request',r=>{if(/supabase.co\/(auth|rest|realtime)/.test(r.url()))requests.push(r.url())});
-  await page.goto('/tour/');
+  await page.goto('/tour/index.html');
   await page.getByRole('button',{name:/Chapter 2: Sign in with your university account/}).click();
   await expect(page.getByText('Continue with Microsoft')).toBeVisible();
   await page.getByRole('button',{name:/Chapter 3: Join a group/}).click();
