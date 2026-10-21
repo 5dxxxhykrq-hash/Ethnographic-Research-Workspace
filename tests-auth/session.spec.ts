@@ -43,3 +43,27 @@ test('magic-link redirect with tokens restores the user and opens the workspace 
  await page.reload();
  await expect(page.getByRole('heading',{name:'Welcome to your research workspace'})).toBeVisible({timeout:15000});
 });
+
+test('Microsoft button starts Azure OAuth with email scope and preserves invitation link',async({page})=>{
+ const destination='JOIN-ALPHA';
+ let authUrl='';
+ await page.route(server+'/auth/v1/authorize**',async route=>{
+  authUrl=route.request().url();
+  await route.fulfill({status:200,contentType:'text/html',body:'<!doctype html><title>Mock Microsoft sign in</title><p>Microsoft authorization started</p>'});
+ });
+ await page.goto('/?invite='+destination);
+ await expect(page.getByRole('button',{name:'Continue with Microsoft'})).toBeVisible();
+ await expect(page.getByRole('button',{name:'Send secure sign-in link'})).toBeVisible();
+ await Promise.all([
+  page.waitForURL(url=>url.hostname==='auth-test.supabase.co'&&url.pathname==='/auth/v1/authorize'),
+  page.getByRole('button',{name:'Continue with Microsoft'}).click()
+ ]);
+ const url=new URL(authUrl);
+ expect(url.searchParams.get('provider')).toBe('azure');
+ expect(url.searchParams.get('scopes')).toBe('email');
+ const redirect=url.searchParams.get('redirect_to');
+ expect(redirect).not.toBeNull();
+ const callback=new URL(redirect!);
+ expect(callback.origin).toBe('http://127.0.0.1:5175');
+ expect(callback.searchParams.get('invite')).toBe(destination);
+});
