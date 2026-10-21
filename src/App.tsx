@@ -16,7 +16,7 @@ const nav=[
  {id:'settings',label:'Settings',hint:'成员与项目设置',Icon:Settings}
 ];
 function AuthGate(){
- const {login,cloud,recoverSession}=useWorkspace();
+ const {login,loginWithMicrosoft,cloud,recoverSession}=useWorkspace();
  const [email,setEmail]=useState('');
  const [sent,setSent]=useState(false);
  const [callbackError,setCallbackError]=useState('');
@@ -40,6 +40,13 @@ function AuthGate(){
   <h1>Research is better when the process is visible.</h1>
   <p>Manage collaborative fieldwork, track weekly milestones and build a shared methods portfolio without losing individual reflections.</p>
   {callbackError&&<div className="otp-error" role="alert">{callbackError}</div>}
+  {cloud&&<div className="microsoft-auth">
+    <button type="button" className="btn microsoft-signin full" disabled={busy} onClick={()=>run(loginWithMicrosoft)}>
+      <span className="microsoft-brand" aria-hidden="true"><i/><i/><i/><i/></span>
+      Continue with Microsoft
+    </button>
+    <div className="auth-divider" aria-hidden="true"><span>or sign in using your university email</span></div>
+  </div>}
   {cloud?<form onSubmit={e=>{e.preventDefault();run(async()=>{await login(email);setSent(true)})}}>
    <Field label="University email" type="email" value={email} onChange={setEmail} placeholder="you@ucl.ac.uk" required/>
    <button className="btn primary full" disabled={busy}>{sent?'Send another sign-in link':'Send secure sign-in link'} <ArrowRight size={16}/></button>
