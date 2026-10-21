@@ -43,3 +43,15 @@
 .workspace-entry-create-toggle svg.expanded{transform:rotate(180deg)}
 .workspace-entry-create form{margin:0;padding:0 17px 18px;background:#fff}
 @media(max-width:520px){.workspace-entry-card{padding:26px 19px}.workspace-entry-join{padding:16px}.workspace-entry-card h1{font-size:24px}}
+
+/* Supabase Azure OAuth pilot sign-in; existing email sign-in remains accessible. */
+.auth-card .microsoft-signin{display:flex;align-items:center;justify-content:center;gap:13px;background:#fff;color:#243348;border:1px solid #d4dce0;min-height:47px;font-weight:700;font-size:13px;box-shadow:0 2px 6px #12232908}
+.auth-card .microsoft-signin:hover:not(:disabled){background:#f3f8fa;border-color:#a9bcb9}
+.microsoft-brand{display:grid;grid-template-columns:repeat(2,8px);grid-template-rows:repeat(2,8px);gap:2px;flex-shrink:0}
+.microsoft-brand i:nth-child(1){background:#f35325}
+.microsoft-brand i:nth-child(2){background:#81bc06}
+.microsoft-brand i:nth-child(3){background:#05a6f0}
+.microsoft-brand i:nth-child(4){background:#ffba08}
+.microsoft-auth .auth-divider{display:flex;align-items:center;gap:10px;margin:18px 0 9px;color:#96a4ac;font-size:11px}
+.microsoft-auth .auth-divider:before,.microsoft-auth .auth-divider:after{content:'';height:1px;flex:1;background:#e3e8ea}
+.microsoft-auth .auth-divider span{text-align:center}
