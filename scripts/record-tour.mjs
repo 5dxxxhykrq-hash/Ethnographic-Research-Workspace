@@ -11,7 +11,7 @@ const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
 try {
  const context=await browser.newContext({viewport:{width:1440,height:900},deviceScaleFactor:1,recordVideo:{dir:out,size:{width:1440,height:900}}});
  const page=await context.newPage();
- await page.goto(base+'/tour/',{waitUntil:'domcontentloaded'});
+ await page.goto(base+'/tour/index.html',{waitUntil:'domcontentloaded'});
  await page.waitForSelector('#timeline button:nth-child(16)');
  if(lang==='zh')await page.getByRole('button',{name:'Toggle Chinese and English captions'}).click();
  // Tour is deliberately 16 chapters * 8 seconds, no authentication or external data.
