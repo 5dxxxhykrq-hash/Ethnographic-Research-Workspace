@@ -1,0 +1,42 @@
+name: Record synthetic Fieldwork OS tour
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'public/tour/**'
+      - 'scripts/record-tour.mjs'
+      - '.github/workflows/tour-video.yml'
+permissions:
+  contents: read
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - name: Serve synthetic website demo
+        run: |
+          npm run dev -- --host 127.0.0.1 > /tmp/fieldwork-tour-vite.log 2>&1 &
+          for i in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:5173/tour/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/fieldwork-tour-vite.log
+          exit 1
+      - name: Record visual walkthrough
+        env:
+          TOUR_LANG: en
+        run: node scripts/record-tour.mjs
+      - name: Convert to shareable MP4
+        run: ffmpeg -y -v warning -i tour-output/fieldwork-os-tour-en.webm -c:v libx264 -preset veryfast -crf 23 -pix_fmt yuv420p -movflags +faststart tour-output/fieldwork-os-tour-en.mp4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fieldwork-os-synthetic-video
+          path: tour-output/*.mp4
+          retention-days: 14
